@@ -1,0 +1,17 @@
+{
+  "name": "express_poker",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jeff Federman",
+  "license": "MIT",
+  "dependencies": {
+    "bookshelf": "^0.8.1",
+    "express": "^4.12.4",
+    "knex": "^0.8.6",
+    "underscore": "^1.8.3"
+  }
+}
