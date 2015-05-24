@@ -57,11 +57,11 @@ app.get('/hands/:hand_id/river', function(req, res) {
 });
 
 app.get('/hands/:hand_id', function(req, res) {
-  var hand = new Hand({id: req.params.hand_id})
-    .fetch()
-    .then(function(hand) {
-      res.json(hand);
-    });
+  new Hand({id: req.params.hand_id})
+  .fetch()
+  .then(function(hand) {
+    res.json(hand);
+  });
 });
 
 app.listen(3000, function() {
