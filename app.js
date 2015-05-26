@@ -33,7 +33,7 @@ app.get('/hands/:hand_id/preflop', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.cards('preflop'));
+    res.json(hand.state('preflop'));
   });
 });
 
@@ -41,7 +41,7 @@ app.get('/hands/:hand_id/flop', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.cards('flop'));
+    res.json(hand.state('flop'));
   });
 });
 
@@ -49,7 +49,7 @@ app.get('/hands/:hand_id/turn', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.cards('turn'));
+    res.json(hand.state('turn'));
   });
 });
 
@@ -57,7 +57,7 @@ app.get('/hands/:hand_id/river', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.cards('river'));
+    res.json(hand.state('river'));
   });
 });
 

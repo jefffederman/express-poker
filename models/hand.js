@@ -1,8 +1,21 @@
 var bookshelf = require('./bookshelf');
+var PE = require('poker-eval');
 
 var Hand = bookshelf.Model.extend({
   tableName: 'hands',
-  cards: function(street) {
+  winners: function(board) {
+    var players = this.get('players');
+    players.forEach(function(player) {
+      var hand = new PE.Hand(board.concat(player['holeCards']));
+      player['handValue'] = hand.value;
+      player['handType'] = PE.Hand.Types[hand.type];
+    });
+    var maxValue = Math.max.apply(Math, players.map(function(p) { return p['handValue']; }));
+    return players.filter(function(p) {
+      return p['handValue'] == maxValue;
+    });
+  },
+  state: function(street) {
     var streetValues = {
       'preflop': { value: 0, next: 'flop'},
       'flop': { value: 1, next: 'turn' },
@@ -20,13 +33,18 @@ var Hand = bookshelf.Model.extend({
     }
     if (streetValue > 2) {
       board = board.concat(this.get('river'))
+      var winners = this.winners(board);
     }
-    return {
+    var resp = {
       handId: this.get('id'),
       street: nextStreet,
       players: this.get('players'),
       board: board
     };
+    if (typeof winners != 'undefined') {
+      resp['winners'] = winners;
+    }
+    return resp;
   }
 });
 
