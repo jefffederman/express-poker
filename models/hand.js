@@ -24,8 +24,7 @@ var Hand = bookshelf.Model.extend({
     return {
       handId: this.get('id'),
       street: nextStreet,
-      player1: this.get('hole_cards_1'),
-      player2: this.get('hole_cards_2'),
+      players: this.get('players'),
       board: board
     };
   }
