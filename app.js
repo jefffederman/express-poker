@@ -2,16 +2,18 @@ var express = require('express');
 var app = express();
 var cors = require('cors');
 app.use(cors());
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({extended: false}));
 var SimpleDeck = require('./models/simple_deck');
 var Hand = require('./models/hand');
+var _ = require('underscore');
 
 app.post('/hands', function (req, res) {
   var deck = new SimpleDeck();
   deck.shuffle();
-  var players = [
-    { name: 'player1', holeCards: deck.deal('holeCards') },
-    { name: 'player2', holeCards: deck.deal('holeCards') }
-  ];
+  var players = _.times(req.body.playerCount, function(i) {
+    return { name: 'player' + (i+1), holeCards: deck.deal('holeCards') };
+  });
   Hand.forge({
     players: JSON.stringify(players),
     flop: JSON.stringify(deck.deal('flop')),
@@ -33,7 +35,8 @@ app.get('/hands/:hand_id/preflop', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.state('preflop'));
+    var handState = setFormActionAndMethod(hand.state('preflop'), req.headers.host);
+    res.json(handState);
   });
 });
 
@@ -41,7 +44,8 @@ app.get('/hands/:hand_id/flop', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.state('flop'));
+    var handState = setFormActionAndMethod(hand.state('flop'), req.headers.host);
+    res.json(handState);
   });
 });
 
@@ -49,7 +53,8 @@ app.get('/hands/:hand_id/turn', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.state('turn'));
+    var handState = setFormActionAndMethod(hand.state('turn'), req.headers.host);
+    res.json(handState);
   });
 });
 
@@ -57,7 +62,8 @@ app.get('/hands/:hand_id/river', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    res.json(hand.state('river'));
+    var handState = setFormActionAndMethod(hand.state('river'), req.headers.host);
+    res.json(handState);
   });
 });
 
@@ -72,3 +78,12 @@ app.get('/hands/:hand_id', function(req, res) {
 app.listen(3000, function() {
   console.log('Running express_poker server on port 3000…');
 });
+
+// Helpers
+
+function setFormActionAndMethod(handState, host) {
+  handState['httpMethod'] = handState['street'] == 'preflop' ? 'POST' : 'GET';
+  var fullHost = 'http://' + host + '/hands';
+  handState['formAction'] = handState['street'] == 'preflop' ? fullHost : fullHost + '/' + handState['handId'] + '/' + handState['street'];
+  return handState;
+}

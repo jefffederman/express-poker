@@ -9,6 +9,7 @@
   "author": "Jeff Federman",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.12.4",
     "bookshelf": "^0.8.1",
     "cors": "^2.6.0",
     "express": "^4.12.4",
