@@ -31,38 +31,11 @@ app.post('/hands', function (req, res) {
   });
 });
 
-app.get('/hands/:hand_id/preflop', function(req, res) {
+app.get('/hands/:hand_id/:street', function(req, res) {
   new Hand({id: req.params.hand_id})
   .fetch()
   .then(function(hand) {
-    var handState = setFormActionAndMethod(hand.state('preflop'), req.headers.host);
-    res.json(handState);
-  });
-});
-
-app.get('/hands/:hand_id/flop', function(req, res) {
-  new Hand({id: req.params.hand_id})
-  .fetch()
-  .then(function(hand) {
-    var handState = setFormActionAndMethod(hand.state('flop'), req.headers.host);
-    res.json(handState);
-  });
-});
-
-app.get('/hands/:hand_id/turn', function(req, res) {
-  new Hand({id: req.params.hand_id})
-  .fetch()
-  .then(function(hand) {
-    var handState = setFormActionAndMethod(hand.state('turn'), req.headers.host);
-    res.json(handState);
-  });
-});
-
-app.get('/hands/:hand_id/river', function(req, res) {
-  new Hand({id: req.params.hand_id})
-  .fetch()
-  .then(function(hand) {
-    var handState = setFormActionAndMethod(hand.state('river'), req.headers.host);
+    var handState = setFormActionAndMethod(hand.state(req.params.street), req.headers.host);
     res.json(handState);
   });
 });
